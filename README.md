@@ -1,19 +1,11 @@
-# This is my package user-invitation
+# Invite to register
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/musiwei/user-invitation.svg?style=flat-square)](https://packagist.org/packages/musiwei/user-invitation)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/musiwei/user-invitation/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/musiwei/user-invitation/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/musiwei/user-invitation/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/musiwei/user-invitation/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/musiwei/user-invitation.svg?style=flat-square)](https://packagist.org/packages/musiwei/user-invitation)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/user-invitation.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/user-invitation)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+When your application doesn't allow user to register, invite to register is commonly used that adds an extra layer of security but still allows the new users to join.  
 
 ## Installation
 
@@ -23,14 +15,14 @@ You can install the package via composer:
 composer require musiwei/user-invitation
 ```
 
-You can publish and run the migrations with:
+Publish and run the migrations:
 
 ```bash
 php artisan vendor:publish --tag="user-invitation-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
+Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="user-invitation-config"
@@ -40,6 +32,110 @@ This is the contents of the published config file:
 
 ```php
 return [
+    /*
+     * Define the user class in your application here
+     */
+    'user'                                 => \App\Models\User::class,
+
+    /*
+     * Define generated token length, default 20 letters.
+     */
+    'token_length'                         => 20,
+
+    /*
+     * Define temparary url link valid period, default 72 hours.
+     */
+    'valid_hour'                           => 72,
+
+    /*
+     * Rate limiting for too frequent email sending, user must wait at least X seconds to send another invitation, default 10 seconds.
+     */
+    'waiting_period_to_send_another_email' => 10,
+
+    /*
+     * Locale column name in user table
+     *
+     * Suggested plugin: https://github.com/akaunting/laravel-language
+     */
+    'locale_db_column_name'                => 'locale',
+
+    /*
+     * Default locale for each new registered user, providing the above locale column exists
+     */
+    'default_locale'                       => 'en',
+
+    /*
+     * Form request fields
+     */
+    'validation_rules'                     => [
+        'register_user'   => [
+            'name'     => ['required', 'string', 'max:255'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'token'    => ['required'],
+        ],
+        'send_invitation' => [
+            'email' => ['required', 'string', 'max:255', 'email', 'unique:users'],
+            'roles' => ['required'],
+        ],
+    ],
+
+    /*
+     * Validation messages associated with above
+     */
+    'validation_messages'                  => [
+        'register_user'   => [
+            'password.required' => 'Please enter the email address you would like to send the invitation to. ',
+            'token.required'    => 'Invitation token is missing, please contact admin. ',
+        ],
+        'send_invitation' => [
+            'email.required' => 'Please enter the email address you would like to send the invitation to. ',
+            'email.unique'   => 'The email address you entered has already been registered. ',
+        ],
+    ],
+
+    /*
+     * Inject authorization strategy for each form request. Default always returns true.
+     * Default option 1: \Musiwei\UserInvitation\Policies\FormRequestAuthorizations\AllowAuthorizationStrategy::class: returns true
+     * Default option 2: \Musiwei\UserInvitation\Policies\FormRequestAuthorizations\AllowAuthorizationStrategy::class: returns false
+     *
+     * You can also create your own strategy.
+     *
+     * Recommended, especially when you want to restrict permission that who can invite user to register,
+     * use with https://github.com/spatie/laravel-permission for the best result
+     *
+     * 1. Create the strategy in your application. `App\Policies\FormRequestAuthorizations` recommended for better folder structure
+     *
+     * 2. It should implement \Musiwei\UserInvitation\Contracts\AuthorizationStrategyContract, code example:
+     *
+     * class SendInvitationAuthorizationStrategy implements AuthorizationStrategyContract
+     * {
+     *      public function authorize($request): bool
+     *      {
+     *              $user = $request->user();
+     *
+     *              return $user->can('inviteUser', [User::class]);
+     *      }
+     * }
+     *
+     * 3. Change the setting below to point to your strategy.
+     */
+    'authorization_strategies'             => [
+        'register_user'   => \Musiwei\UserInvitation\Policies\FormRequestAuthorizations\AllowAuthorizationStrategy::class,
+        'send_invitation' => \Musiwei\UserInvitation\Policies\FormRequestAuthorizations\AllowAuthorizationStrategy::class,
+    ],
+
+    /*
+     * Route settings, this will apply to all the routes in this package
+     *
+     * Url prefix: e.g. http://example.com/user-invitation/register
+     * Middleware: must be an array, e.g. ['auth:sanctum', 'verified']
+     * Route name: is useful for grouping the routes, most of the time you should use route name, avoid using url in your application if possible
+     */
+    'route'                                => [
+        'prefix'     => 'user-invitation',
+        'middleware' => [],
+        'name'       => 'user-invitation',
+    ],
 ];
 ```
 
@@ -51,12 +147,114 @@ php artisan vendor:publish --tag="user-invitation-views"
 
 ## Usage
 
+You only need to create the views to link to the endpoint this controller provides:
+`Musiwei\UserInvitation\Http\Controllers\UserInvitationsController`
+
+### Event
+This package embraces event-driven and provides the below events:
+
+- InvitationAcceptedAndUserRegistered: triggered once an user is registered, you will receive the newly created user in the event.
+
+You may add a listener to listen to this event then implement your logic.   
+
+### Modify the response
+
+By default, the controller returns redirection or Inertia responses for Laravel Jetstream. To change the responses, you can inherit the controller and modify the corresponding methods as described below. 
+
+#### Example
+
 ```php
-$userInvitation = new Musiwei\UserInvitation();
-echo $userInvitation->echoPhrase('Hello, Musiwei!');
+class YourController extends UserInvitationsController
+{
+    protected function getSuccessfullySentInvitationResponse(): Responsable|RedirectResponse
+    {
+        return redirect()->back()->with('success', __('The invitation has been sent. '));
+    }
+}
+```
+#### Controller actions you can replace
+
+You can customise responses for each endpoint.
+
+- `getExtraAttributesForInvitation` is the extra fields you'd like to save into invitation
+- `getExtraAttributesForUserCreation` is the extra field your'd like to save into user table populating from an Invitation model.
+The rest are the customisable responses. 
+
+Check the `Musiwei\UserInvitation\Http\Controllers\UserInvitationsController` for more information. 
+
+```php
+/**
+ * This method can be overridden in a subclass
+ *
+ * @return array
+ */
+protected function getExtraAttributesForInvitation(): array
+{
+    return [];
+}
+
+/**
+ * This method can be overridden in a subclass
+ *
+ * @param  \Musiwei\UserInvitation\Models\Invitation  $invitation
+ *
+ * @return array
+ */
+protected function getExtraAttributesForUserCreation(Invitation $invitation): array
+{
+    return [];
+}
+
+/**
+ * This method can be overridden in a subclass
+ *
+ * @return RedirectResponse|Responsable
+ */
+protected function getSuccessfullySentInvitationResponse(): Responsable|RedirectResponse
+{
+    return redirect()->back()->with('success', __('The invitation has been sent. '));
+}
+
+/**
+ * This method can be overridden in a subclass
+ *
+ * @param  Authenticatable  $user
+ *
+ * @return RedirectResponse|Responsable
+ */
+protected function getSuccessfulRegistrationResponse(Authenticatable $user): Responsable|RedirectResponse
+{
+    return redirect()->route('dashboard')->with(
+        'success',
+        __('Congratulations, you have completed registration. ')
+    );
+}
+
+/**
+ * This method can be overridden in a subclass
+ *
+ * @param  Invitation  $invitation
+ *
+ * @return RedirectResponse|Responsable
+ */
+protected function getAcceptInvitationResponse(Invitation $invitation): Responsable|RedirectResponse
+{
+    // Registration page
+    return Inertia::render('User/AcceptInvitation', ['invitation' => $invitation]);
+}
+
+/**
+ * This method can be overridden in a subclass
+ *
+ * @return RedirectResponse|Responsable
+ */
+protected function getInvitationNotFoundResponse(): Responsable|RedirectResponse
+{
+    return Inertia::render('Error/InvitationNotFound');
+}
 ```
 
-## Testing
+## 
 
 ```bash
 composer test
@@ -66,18 +264,9 @@ composer test
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
 ## Credits
 
 - [Siwei Mu](https://github.com/musiwei)
-- [All Contributors](../../contributors)
 
 ## License
 
