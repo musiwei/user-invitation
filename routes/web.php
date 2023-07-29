@@ -6,7 +6,7 @@ use Musiwei\UserInvitation\Http\Controllers\UserInvitationsController;
 Route::middleware('web')->group(function () {
     Route::prefix(config('user-invitation.route.prefix', 'user-invitation'))
         ->middleware(config('user-invitation.route.middleware', []))
-        ->name(config('user-invitation.route.name', 'user-invitation'))
+        ->name(config('user-invitation.route.name', 'user-invitation') . '.')
         ->group(function () {
             Route::post(
                 '/invite',
