@@ -16,6 +16,7 @@ class UserInvitationServiceProvider extends PackageServiceProvider
     {
         parent::boot();
 
+        // Exclusive script for laravel-vue-i18n package
         if ($this->package->hasTranslations) {
             $langPath = '';
 

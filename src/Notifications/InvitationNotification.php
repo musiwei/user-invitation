@@ -42,10 +42,11 @@ class InvitationNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->greeting(__('Notification.welcome'))
-            ->line(__('Notification.invited', ['name' => config('app.name')]))
-            ->action(__('Notification.accept'), $this->notificationUrl)
-            ->line(__('Notification.expiry', ['hour' => $this->validHours]));
+            ->subject('user-invitation.subject')
+            ->greeting(__('user-invitation.welcome'))
+            ->line(__('user-invitation.invited', ['name' => config('app.name')]))
+            ->action(__('user-invitation.accept'), $this->notificationUrl)
+            ->line(__('user-invitation.expiry', ['hour' => $this->validHours]));
     }
 
     /**

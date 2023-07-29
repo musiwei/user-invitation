@@ -43,18 +43,18 @@ Publish the config file:
 php artisan vendor:publish --tag="user-invitation-config"
 ```
 
-Publish the tranlsation file:
-
-```bash
-php artisan vendor:publish --tag="user-invitation-translation"
-```
-
-Publish the tranlsation file in laravel-vue-i18n (https://github.com/xiCO2k/laravel-vue-i18n) way:
+(Recommended) Publish the tranlsation file in laravel-vue-i18n (https://github.com/xiCO2k/laravel-vue-i18n) way:
 
 Warning: this will publish the file to your project's `lang` folder.
 
 ```bash
 php artisan vendor:publish --tag="user-invitation-translation-laravel-vue-i18n"
+```
+
+Publish the translation file the regular Laravel way:
+
+```bash
+php artisan vendor:publish --tag="user-invitation-translation"
 ```
 
 This is the contents of the published config file:
