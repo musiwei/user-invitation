@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Musiwei\UserInvitation\Events\InvitationAcceptedAndUserRegistered;
+use Musiwei\UserInvitation\Events\UserInvitationSent;
 use Musiwei\UserInvitation\Http\Requests\RegisterInvitedUserRequest;
 use Musiwei\UserInvitation\Http\Requests\SendInvitationRequest;
 use Musiwei\UserInvitation\Models\Invitation;
@@ -62,8 +63,10 @@ class UserInvitationsController
             $invitation = $this->userInvitationService->getByEmail($validated['email']);
             $this->userInvitationService->update($invitation, $baseData); // Note we use baseData here
         } catch (ModelNotFoundException) {
-            $this->userInvitationService->create($invitationData); // Note we use invitationData here
+            $invitation = $this->userInvitationService->create($invitationData); // Note we use invitationData here
         }
+
+        UserInvitationSent::dispatch($invitation);
 
         $this->userInvitationService->sendEmail($validated['email'], $token);
 
@@ -194,10 +197,7 @@ class UserInvitationsController
      */
     protected function getSuccessfulRegistrationResponse(Authenticatable $user): Responsable|RedirectResponse
     {
-        return redirect()->route('dashboard')->with(
-            'success',
-            __('Congratulations, you have completed registration. ')
-        );
+        return redirect(\App\Providers\RouteServiceProviderRouteServiceProvider::HOME);;
     }
 
     /**
@@ -210,7 +210,7 @@ class UserInvitationsController
     protected function getAcceptInvitationResponse(Invitation $invitation): Responsable|RedirectResponse
     {
         // Registration page
-        return Inertia::render('User/AcceptInvitation', ['invitation' => $invitation]);
+        return Inertia::render(config('uesr-invitation.view.inertia.accept'), ['invitation' => $invitation]);
     }
 
     /**
@@ -220,7 +220,7 @@ class UserInvitationsController
      */
     protected function getInvitationNotFoundResponse(): Responsable|RedirectResponse
     {
-        return Inertia::render('Error/InvitationNotFound');
+        return Inertia::render(config('uesr-invitation.view.inertia.error'));
     }
 
 }

@@ -12,7 +12,7 @@ return [
     /*
      * Define the controller class in your application here
      */
-    'controller'                                 => \Musiwei\UserInvitation\Http\Controllers\UserInvitationsController::class,
+    'controller'                           => \Musiwei\UserInvitation\Http\Controllers\UserInvitationsController::class,
 
     /*
      * Define generated token length, default 20 letters.
@@ -51,7 +51,7 @@ return [
             'token'    => ['required'],
         ],
         'send_invitation' => [
-            'email' => ['required', 'string', 'max:255', 'email', 'unique:users'],
+            'email'   => ['required', 'string', 'max:255', 'email', 'unique:users'],
             'roles.*' => ['required', 'in:1,3'],
         ],
     ],
@@ -66,8 +66,8 @@ return [
         ],
         'send_invitation' => [
             'email.required' => 'Please enter the email address you would like to send the invitation to. ',
-            'email.email' => 'Please enter a valid email address. ',
-            'email.unique' => 'The email address you entered has already been registered. ',
+            'email.email'    => 'Please enter a valid email address. ',
+            'email.unique'   => 'The email address you entered has already been registered. ',
             'roles.required' => 'A role must be assigned. ',
         ],
     ],
@@ -114,5 +114,17 @@ return [
         'prefix'     => 'user-invitation',
         'middleware' => [],
         'name'       => 'user-invitation',
+    ],
+
+    /*
+     * Default view settings, if you do not override, the below views will be used as responses.
+     *
+     * For inertia, it targets your Vue folder and renders: `Inertia::render('User/AcceptInvitation');`
+     */
+    'view' => [
+        'inertia' => [
+            'accept' => 'User/AcceptInvitation',
+            'error' => 'Error/InvitationNotFound',
+        ],
     ],
 ];

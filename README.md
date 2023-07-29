@@ -53,6 +53,11 @@ return [
     'user'                                 => \App\Models\User::class,
 
     /*
+     * Define the controller class in your application here
+     */
+    'controller'                           => \Musiwei\UserInvitation\Http\Controllers\UserInvitationsController::class,
+
+    /*
      * Define generated token length, default 20 letters.
      */
     'token_length'                         => 20,
@@ -89,8 +94,8 @@ return [
             'token'    => ['required'],
         ],
         'send_invitation' => [
-            'email' => ['required', 'string', 'max:255', 'email', 'unique:users'],
-            'roles' => ['required'],
+            'email'   => ['required', 'string', 'max:255', 'email', 'unique:users'],
+            'roles.*' => ['required', 'in:1,3'],
         ],
     ],
 
@@ -104,7 +109,9 @@ return [
         ],
         'send_invitation' => [
             'email.required' => 'Please enter the email address you would like to send the invitation to. ',
+            'email.email'    => 'Please enter a valid email address. ',
             'email.unique'   => 'The email address you entered has already been registered. ',
+            'roles.required' => 'A role must be assigned. ',
         ],
     ],
 
@@ -151,6 +158,16 @@ return [
         'middleware' => [],
         'name'       => 'user-invitation',
     ],
+
+    /**
+     * Default view settings, when you do not override, the below views will be used as responses.
+     */
+    'view' => [
+        'inertia' => [
+            'accept' => 'User/AcceptInvitation',
+            'error' => 'Error/InvitationNotFound',
+        ],
+    ],
 ];
 ```
 
@@ -168,9 +185,10 @@ You only need to create the views to link to the endpoint this controller provid
 ### Event
 This package embraces event-driven and provides the below events:
 
-- InvitationAcceptedAndUserRegistered: triggered once an user is registered, you will receive the newly created user in the event.
+- `UserInvitataionSent` triggered once an invitation has been sent, you will receive the invitation object in the event.
+- `InvitationAcceptedAndUserRegistered` triggered once a user is registered, you will receive the newly created user in the event.
 
-You may add a listener to listen to this event then implement your logic.   
+You may add a listener to listen to these events then implement your logic.   
 
 ### Modify the response
 
