@@ -46,7 +46,7 @@ class UserInvitationsController
             'token'      => $token,
             'email'      => $validated['email'],
             'inviter_id' => $currentUserId,
-            'roles'      => [$validated['roles']],
+            'roles'      => $validated['roles'],
         ];
 
         // Merge extra attributes, you may define your logic by replacing the below function
@@ -113,7 +113,9 @@ class UserInvitationsController
 
             // Append `locale` if `locale` column exists in user table, value can be set in config
             $localeDbColumnName = (string)config('user-invitation.locale_db_column_name');
-            if (Schema::hasColumn($userModel::getTable(), $localeDbColumnName)) {
+
+            $userModelInstance = new $userModel;
+            if (Schema::hasColumn($userModelInstance->getTable(), $localeDbColumnName)) {
                 $defaultLocale = (string)config('user-invitation.default_locale');
 
                 $userAttributes[$localeDbColumnName] = $defaultLocale;
