@@ -11,9 +11,24 @@ When your application doesn't allow user to register, invite to register is comm
 
 You can install the package via composer:
 
-```bash
-composer require musiwei/user-invitation
+### Step 1: add below to the end of your composer.json
+
+```json
+"repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:musiwei/user-invitation.git"
+        }
+    ]
 ```
+
+### Step 2: run below in your command line 
+
+```bash
+composer require musiwei/user-invitation:dev-main
+```
+
+### Step 3: migrations and publish config
 
 Publish and run the migrations:
 

@@ -50,7 +50,7 @@ class UserInvitationsController
         ];
 
         // Merge extra attributes, you may define your logic by replacing the below function
-        $extraAttributes = $this->getExtraAttributesForInvitation();
+        $extraAttributes = $this->getExtraAttributesForInvitation($validated);
         $invitationData = array_merge($baseData, $extraAttributes);
 
         /**
@@ -152,9 +152,11 @@ class UserInvitationsController
     /**
      * This method can be overridden in a subclass
      *
+     * @param  array  $validated
+     *
      * @return array
      */
-    protected function getExtraAttributesForInvitation(): array
+    protected function getExtraAttributesForInvitation(array $validated): array
     {
         return [];
     }

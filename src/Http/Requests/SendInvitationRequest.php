@@ -65,8 +65,11 @@ class SendInvitationRequest extends FormRequest
             /**
              * Restrict roles to the existing ones only
              */
-            if (!Role::where('id', $this->input('role'))->exists()) {
-                $validator->errors()->add('role', 'Sorry, the role you try to assign does not exist. ');
+            $roles = $this->input('roles');
+            $existingRoleIds = Role::whereIn('id', $roles)->pluck('id')->toArray();
+
+            if(count($roles) !== count($existingRoleIds)) {
+                $validator->errors()->add('roles', 'Sorry, one or more of the roles you try to assign does not exist.');
             }
         });
     }
