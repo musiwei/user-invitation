@@ -10,7 +10,14 @@ return [
     'user'                                 => \App\Models\User::class,
 
     /*
-     * Define the controller class in your application here
+     * Define the user database table, this is used to set value for the invitee column in database
+     */
+    'user_db_table' => 'users',
+
+    /*
+     * Define the controller class in your application here, this is used for the routes
+     *
+     * This controller must extend \Musiwei\UserInvitation\Http\Controllers\UserInvitationsController
      */
     'controller'                           => \Musiwei\UserInvitation\Http\Controllers\UserInvitationsController::class,
 
@@ -112,7 +119,7 @@ return [
      */
     'route'                                => [
         'prefix'     => 'user-invitation',
-        'middleware' => [],
+        'middleware' => ['language'],
         'name'       => 'user-invitation',
     ],
 
