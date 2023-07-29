@@ -7,7 +7,7 @@ Route::prefix(config('user-invitation.route.prefix'))
     ->middleware(config('user-invitation.route.middleware'))
     ->name(config('user-invitation.route.name'))
     ->group(function () {
-        Route::post('/invite', [UserInvitationsController::class, 'invite']);
-        Route::get('/accept-invitation/{token}', [UserInvitationsController::class, 'accept']);
-        Route::post('/register', [UserInvitationsController::class, 'register']);
+        Route::post('/invite', [config('user-invitation.controller'), 'invite']);
+        Route::get('/accept-invitation/{token}', [config('user-invitation.controller'), 'accept']);
+        Route::post('/register', [config('user-invitation.controller'), 'register']);
     });

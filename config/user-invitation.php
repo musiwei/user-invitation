@@ -10,6 +10,11 @@ return [
     'user'                                 => \App\Models\User::class,
 
     /*
+     * Define the controller class in your application here
+     */
+    'controller'                                 => \Musiwei\UserInvitation\Http\Controllers\UserInvitationsController::class,
+
+    /*
      * Define generated token length, default 20 letters.
      */
     'token_length'                         => 20,
@@ -61,7 +66,9 @@ return [
         ],
         'send_invitation' => [
             'email.required' => 'Please enter the email address you would like to send the invitation to. ',
-            'email.unique'   => 'The email address you entered has already been registered. ',
+            'email.email' => 'Please enter a valid email address. ',
+            'email.unique' => 'The email address you entered has already been registered. ',
+            'role.required' => 'A role must be assigned. ',
         ],
     ],
 
