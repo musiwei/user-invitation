@@ -12,6 +12,27 @@ use Musiwei\UserInvitation\Commands\UserInvitationCommand;
 
 class UserInvitationServiceProvider extends PackageServiceProvider
 {
+    public function boot()
+    {
+        parent::boot();
+
+        if ($this->package->hasTranslations) {
+            $langPath = '';
+
+            $langPath = (function_exists('lang_path'))
+                ? lang_path($langPath)
+                : resource_path('lang/' . $langPath);
+        }
+
+        if ($this->app->runningInConsole()) {
+            if ($this->package->hasTranslations) {
+                $this->publishes([
+                    $this->package->basePath('/../resources/lang') => $langPath,
+                ], "{$this->package->shortName()}-translations-laravel-vue-i18n");
+            }
+        }
+    }
+
     public function configurePackage(Package $package): void
     {
         $package
