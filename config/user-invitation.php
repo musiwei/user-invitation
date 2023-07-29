@@ -52,7 +52,7 @@ return [
         ],
         'send_invitation' => [
             'email' => ['required', 'string', 'max:255', 'email', 'unique:users'],
-            'roles' => ['required'],
+            'roles.*' => ['required', 'in:1,3'],
         ],
     ],
 
@@ -68,7 +68,7 @@ return [
             'email.required' => 'Please enter the email address you would like to send the invitation to. ',
             'email.email' => 'Please enter a valid email address. ',
             'email.unique' => 'The email address you entered has already been registered. ',
-            'role.required' => 'A role must be assigned. ',
+            'roles.required' => 'A role must be assigned. ',
         ],
     ],
 

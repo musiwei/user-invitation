@@ -104,7 +104,7 @@ class UserInvitationService
     public function generateTemporaryLink(string $token): string
     {
         return URL::temporarySignedRoute(
-            'user.accept-invitation',
+            config('user-invitation.route.name') . '.accept',
             now()->addHours(config('user-invitation.valid_hour')),
             ['token' => $token]
         );
