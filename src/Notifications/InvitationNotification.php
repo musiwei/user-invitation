@@ -9,29 +9,26 @@ use Illuminate\Notifications\Notification;
 class InvitationNotification extends Notification
 {
     use Queueable;
-
-    protected string $notificationUrl;
-    protected int $validHours;
-
+    protected $notificationUrl;
+    protected $validHours;
     /**
      * Create a new notification_url instance.
      *
-     * @param string $notificationUrl
-     * @param int $validHours
+     * @param $notification_url
      */
-    public function __construct(string $notificationUrl, int $validHours)
+    public function __construct($notificationUrl, $validMinutes)
     {
         $this->notificationUrl = $notificationUrl;
-        $this->validHours = $validHours;
+        $this->validHours = $validMinutes;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
-    public function via(mixed $notifiable): array
+    public function via($notifiable)
     {
         return ['mail'];
     }
@@ -39,27 +36,28 @@ class InvitationNotification extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param mixed $notifiable
-     * @return MailMessage
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail(mixed $notifiable): MailMessage
+    public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(__("You are invited to register ") . config('app.name'))
-            ->greeting(__('Welcome onboard! '))
-            ->line(__('Click below button to join ') . config('app.name') . ". ")
-            ->action(__('Accept'), $this->notificationUrl)
-            ->line(__('This link will expire after ') . $this->validHours . __(' hours. '));
+            ->greeting(__('Notification.welcome'))
+            ->line(__('Notification.invited', ['name' => config('app.name')]))
+            ->action(__('Notification.accept'), $this->notificationUrl)
+            ->line(__('Notification.expiry', ['hour' => $this->validHours]));
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray(mixed $notifiable): array
+    public function toArray($notifiable)
     {
-        return [];
+        return [
+            //
+        ];
     }
 }

@@ -18,6 +18,7 @@ class UserInvitationServiceProvider extends PackageServiceProvider
             ->name('user-invitation')
             ->hasConfigFile()
             ->hasViews()
+            ->hasTranslations()
             ->hasRoute('web')
             ->hasMigration('create_user_invitation_table')
             ->hasCommand(UserInvitationCommand::class);
