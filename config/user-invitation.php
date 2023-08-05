@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Validation\Rules;
-
 // config for Musiwei/UserInvitation
 return [
     /*
@@ -54,7 +52,7 @@ return [
     'validation_rules'                     => [
         'register_user'   => [
             'name'     => ['required', 'string', 'max:255'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'min:6', 'regex:/^[^\s]*$/'],
             'token'    => ['required'],
         ],
         'send_invitation' => [

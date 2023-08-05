@@ -42,7 +42,7 @@ class InvitationNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('user-invitation.subject')
+            ->subject(__('user-invitation.subject'))
             ->greeting(__('user-invitation.welcome'))
             ->line(__('user-invitation.invited', ['name' => config('app.name')]))
             ->action(__('user-invitation.accept'), $this->notificationUrl)
