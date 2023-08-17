@@ -210,7 +210,7 @@ class UserInvitationsController
     protected function getAcceptInvitationResponse(Invitation $invitation): Responsable|RedirectResponse
     {
         // Registration page
-        return Inertia::render(config('uesr-invitation.view.inertia.accept'), ['invitation' => $invitation]);
+        return Inertia::render(config('user-invitation.view.inertia.accept'), ['invitation' => $invitation]);
     }
 
     /**
@@ -220,7 +220,7 @@ class UserInvitationsController
      */
     protected function getInvitationNotFoundResponse(): Responsable|RedirectResponse
     {
-        return Inertia::render(config('uesr-invitation.view.inertia.error'));
+        return Inertia::render(config('user-invitation.view.inertia.error'));
     }
 
 }
