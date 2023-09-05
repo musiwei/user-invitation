@@ -48,13 +48,13 @@ php artisan vendor:publish --tag="user-invitation-config"
 Warning: this will publish the file to your project's `lang` folder, any existing language fill will be replaced by `--force` tag.
 
 ```bash
-php artisan vendor:publish --tag="user-invitation-translation-laravel-vue-i18n --force"
+php artisan vendor:publish --tag="user-invitation-translations-laravel-vue-i18n"
 ```
 
 Publish the translation file the regular Laravel way:
 
 ```bash
-php artisan vendor:publish --tag="user-invitation-translation --force"
+php artisan vendor:publish --tag="user-invitation-translations --force"
 ```
 
 This is the contents of the published config file:
