@@ -2,6 +2,7 @@
 
 namespace Musiwei\UserInvitation\Http\Controllers;
 
+use App\Models\Location;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Responsable;
@@ -130,6 +131,11 @@ class UserInvitationsController
 
             $user = $userModel::create($userData);
 
+            $manyToManyRelationship = $this->getManyToManyRelationshipForUserCreation($invitation);
+            foreach ($manyToManyRelationship as $relationship => $ids) {
+                $user->$relationship()->attach($ids);
+            }
+
             // Set user to be verified (this is for logical reason: user comes to this page from the link in the invitation email)
             if ($user->markEmailAsVerified()) {
                 event(new Verified($user));
@@ -140,13 +146,13 @@ class UserInvitationsController
                 $user->assignRole(Role::findById($r));
             }
 
+            InvitationAcceptedAndUserRegistered::dispatch($user);
+
             // Remove the invitation
             $this->userInvitationService->remove($invitation);
 
             // Automatically log the user in and go to homepage
             Auth::login($user);
-
-            InvitationAcceptedAndUserRegistered::dispatch($user);
 
             return $this->getSuccessfulRegistrationResponse($user);
         } catch (ModelNotFoundException) {
@@ -174,6 +180,18 @@ class UserInvitationsController
      * @return array
      */
     protected function getExtraAttributesForUserCreation(Invitation $invitation): array
+    {
+        return [];
+    }
+
+    /**
+     * This method can be overridden in a subclass
+     *
+     * @param  \Musiwei\UserInvitation\Models\Invitation  $invitation
+     *
+     * @return array
+     */
+    protected function getManyToManyRelationshipForUserCreation(Invitation $invitation): array
     {
         return [];
     }
@@ -222,5 +240,4 @@ class UserInvitationsController
     {
         return Inertia::render(config('user-invitation.view.inertia.error'));
     }
-
 }
