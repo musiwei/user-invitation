@@ -189,7 +189,7 @@ class UserInvitationsController
      *
      * @param  \Musiwei\UserInvitation\Models\Invitation  $invitation
      *
-     * @return array
+     * @return array key must be a many-to-many relationship name, value is an array of ids from that relationship
      */
     protected function getManyToManyRelationshipForUserCreation(Invitation $invitation): array
     {

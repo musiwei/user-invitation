@@ -221,11 +221,12 @@ class YourController extends UserInvitationsController
 ```
 #### Controller actions you can replace
 
-You can customise responses for each endpoint.
+You can customise responses for each endpoint. Examples are given per below. 
 
 - `getExtraAttributesForInvitation` is the extra fields you'd like to save into invitation
 - `getExtraAttributesForUserCreation` is the extra field your'd like to save into user table populating from an Invitation model.
 The rest are the customisable responses. 
+- `getManyToManyRelationshipForUserCreation` can add many-to-many relationship to user model that is defined by your application.  
 
 Check the `Musiwei\UserInvitation\Http\Controllers\UserInvitationsController` for more information. 
 
@@ -237,7 +238,12 @@ Check the `Musiwei\UserInvitation\Http\Controllers\UserInvitationsController` fo
  */
 protected function getExtraAttributesForInvitation(): array
 {
-    return [];
+    return [
+        'extra_attributes' => [
+            'name'           => $validated['name'],
+            'location_uuids' => $validated['location_uuids'],
+        ],
+    ];
 }
 
 /**
@@ -249,7 +255,29 @@ protected function getExtraAttributesForInvitation(): array
  */
 protected function getExtraAttributesForUserCreation(Invitation $invitation): array
 {
-    return [];
+    $location = Location::where('uuid', $invitation->extra_attributes['location_uuid'])->first();
+
+    return [
+        'location_id' => $location->id,
+    ];
+}
+
+/**
+ * This method can be overridden in a subclass
+ *
+ * @param  \Musiwei\UserInvitation\Models\Invitation  $invitation
+ *
+ * @return array
+ */
+protected function getManyToManyRelationshipForUserCreation(Invitation $invitation): array
+{
+    $locations = Location::whereIn('uuid', $invitation->extra_attributes['location_uuids'])->get();
+
+    $locationIds = $locations->pluck('id')->toArray();
+
+    return [
+        'locations' => $locationIds,
+    ];
 }
 
 /**
