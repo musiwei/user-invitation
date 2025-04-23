@@ -20,7 +20,7 @@
         "illuminate/contracts": "^11.0",
         "inertiajs/inertia-laravel": "^1.0",
         "spatie/laravel-package-tools": "^1.14.0",
-        "spatie/laravel-permission": "^5.10"
+        "spatie/laravel-permission": "^6.0"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
