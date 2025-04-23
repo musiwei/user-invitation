@@ -2,6 +2,10 @@
 
 All notable changes to `user-invitation` will be documented in this file.
 
+## Upgraded to Laravel 11 - 2025-04-23
+
+Added Laravel 11 support
+
 ## Upgrade to Laravel 11 - 2025-04-23
 
 Added Laravel 11 support
