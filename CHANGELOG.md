@@ -2,6 +2,10 @@
 
 All notable changes to `user-invitation` will be documented in this file.
 
+## Upgrade to Laravel 11 - 2025-04-23
+
+Added Laravel 11 support
+
 ## Fixed some bugs - 2023-07-29
 
 Added web middleware to route group and adjusted config files, added user_db_table setting
