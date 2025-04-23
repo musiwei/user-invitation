@@ -16,9 +16,9 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "illuminate/contracts": "^10.0",
-        "inertiajs/inertia-laravel": "^0.6.9",
+        "inertiajs/inertia-laravel": "^1.0",
         "spatie/laravel-package-tools": "^1.14.0",
         "spatie/laravel-permission": "^5.10"
     },
